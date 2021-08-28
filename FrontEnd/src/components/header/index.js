@@ -19,10 +19,13 @@ import Button from '@material-ui/core/Button';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import SettingsApplicationsIcon from '@material-ui/icons/SettingsApplications';
+import {  Link,} from 'react-router-dom';
+import Container from '@material-ui/core/Container';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
+    height: '64px',
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -97,44 +100,39 @@ const useStyles = makeStyles((theme) => ({
   },
   userIcon:{
     marginRight: '5px'
+  },
+  selected:{
+    color: '#ff8000',
+  },
+  colorBlack: {
+    color: 'rgba(0, 0, 0, 0.87)'
   }
 }));
-let userInfo= true;
+
 
 export default function Header() {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
-  const isMenuOpen = Boolean(anchorEl);
-  const isAccountMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  const [isLogin, setIsLogin] = React.useState('true');
+  const userInfo= isLogin;
+  const handleAccountLogOut = () => {
+    handleAccountMenuClose();
+    setIsLogin(false);
+  }
+  
+  // set up menu pages list  in mobile
+  const [MenuAnchorEl, setMenuAnchorEl] = React.useState(null);
+  const isMenuOpen = Boolean(MenuAnchorEl);
+  const handleMenuOpen = (event) => {
+    setMenuAnchorEl(event.currentTarget);
   };
-
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
-
   const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-  };
-  const handleAccountMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-  };
+    setMenuAnchorEl(null);
 
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
   };
-
   const menuId = 'primary-search-menu';
   const renderMenu = (
     <Menu
-      anchorEl={anchorEl}
+      anchorEl={MenuAnchorEl}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       id={menuId}
       keepMounted
@@ -142,11 +140,22 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Trang chủ</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Cộng đồng</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Bài Viết</MenuItem>
+      <MenuItem onClick={handleMenuClose}><Link className={classes.colorBlack} to="/">Trang chủ</Link></MenuItem>
+      <MenuItem onClick={handleMenuClose}><Link className={classes.colorBlack} to="/congdong">Cộng đồng</Link></MenuItem>
+      <MenuItem onClick={handleMenuClose}><Link className={classes.colorBlack} to="/baiviet">Bài Viết</Link></MenuItem>
     </Menu>
   );
+
+  //set up user account menu
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const isAccountMenuOpen = Boolean(anchorEl);
+  const handleAccountMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleAccountMenuClose = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  };
   const AccountMenu = 'primary-search-account-menu';
   const renderAccountMenu  = (
     <Menu
@@ -160,10 +169,19 @@ export default function Header() {
     >.
       <MenuItem onClick={handleAccountMenuClose}><SettingsApplicationsIcon className={classes.userIcon} />Quản Lý</MenuItem>
       <MenuItem onClick={handleAccountMenuClose}><PostAddIcon className={classes.userIcon} />Đăng bài viết</MenuItem>
-      <MenuItem onClick={handleAccountMenuClose}><ExitToAppIcon className={classes.userIcon} /> Đăng Xuất</MenuItem>
+      <MenuItem onClick={handleAccountLogOut}><ExitToAppIcon className={classes.userIcon} /> Đăng Xuất</MenuItem>
     </Menu>
   );
 
+  // set up menu user parent in mobile
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const handleMobileMenuOpen = (event) => {
+    setMobileMoreAnchorEl(event.currentTarget);
+  };
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null);
+  };
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
     <Menu
@@ -176,23 +194,23 @@ export default function Header() {
       onClose={handleMobileMenuClose}
     >
       <MenuItem>
-        <IconButton aria-label="show 4 new mails" color="inherit">
+        <IconButton onClick={handleMobileMenuClose} aria-label="show 4 new mails" color="inherit">
           <Badge badgeContent={4} color="secondary">
             <MailIcon />
           </Badge>
         </IconButton>
-        <p>Messages</p>
+        <p onClick={handleMobileMenuClose}>Messages</p>
       </MenuItem>
       <MenuItem>
-        <IconButton aria-label="show 11 new notifications" color="inherit">
+        <IconButton onClick={handleMobileMenuClose} aria-label="show 11 new notifications" color="inherit">
           <Badge badgeContent={11} color="secondary">
             <NotificationsIcon />
           </Badge>
         </IconButton>
-        <p>Notifications</p>
+        <p onClick={handleMobileMenuClose}>Notifications</p>
       </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
+      <MenuItem onClick={handleAccountMenuOpen}>
+        <IconButton onClick={handleMobileMenuClose}
           aria-label="account of current user"
           aria-controls="primary-search-account-menu"
           aria-haspopup="true"
@@ -200,29 +218,52 @@ export default function Header() {
         >
           <AccountCircle />
         </IconButton>
-        <p>Profile</p>
+        <p onClick={handleMobileMenuClose}>Profile</p>
       </MenuItem>
     </Menu>
   );
 
+  //set up style for select menu, select
+  const [selectedType,setSelectedType] = React.useState('');
+
   return (
     <div className={classes.grow}>
       <AppBar position="fixed">
+      <Container>
         <Toolbar>
-          <Typography className={classes.title} variant="h6" noWrap>
-            Team 2 IT
-          </Typography>
+          <Link  onClick = {() => setSelectedType('')} to="/">
+            <Typography className={classes.title} variant="h6" noWrap>
+              Team 2 IT
+            </Typography>
+          </Link>
           <div className={classes.menuDesktop}>
-            <MenuItem>Trang chủ</MenuItem>
-            <MenuItem>Cộng Đồng</MenuItem>
-            <MenuItem>Bài Viết</MenuItem>
+            <MenuItem>
+              <Link className={selectedType==='homepage' ? classes.selected : ''}
+                onClick = {() => setSelectedType('homepage')} to="/">
+                  Trang chủ
+              </Link>
+            </MenuItem>
+            <MenuItem>
+              <Link className={selectedType==='community' ? classes.selected : ''}
+                onClick = {() => setSelectedType('community')}
+                to="/congdong">
+                  Cộng Đồng
+              </Link>
+            </MenuItem>
+            <MenuItem>
+              <Link className={selectedType==='blogs' ? classes.selected : ''}
+                onClick = {() => setSelectedType('blogs')}
+                to="/baiviet">
+                  Bài viết
+              </Link>
+            </MenuItem>
           </div>
           <div className={classes.menuMobile}>
             <IconButton
             aria-label="show more"
             aria-controls={menuId}
             aria-haspopup="true"
-            onClick={handleProfileMenuOpen }
+            onClick={handleMenuOpen }
             color="inherit"
             >
                 <MenuIcon />
@@ -260,7 +301,7 @@ export default function Header() {
                 aria-label="account of current user"
                 aria-controls={AccountMenu}
                 aria-haspopup="true"
-                onClick={handleProfileMenuOpen}
+                onClick={handleAccountMenuOpen}
                 color="inherit"
               >
                 <AccountCircle />
@@ -281,13 +322,25 @@ export default function Header() {
           ) : (
             <div>
               <ButtonGroup disableElevation variant="contained" color="primary">
-                <Button>Đăng Ký</Button>
-                <Button>Đăng Nhập</Button>
+                <Button>
+                  <Link className={selectedType==='signup' ? classes.selected : ''}
+                    onClick = {() => setSelectedType('signup')}
+                    to="/dangky">
+                      Đăng Ký
+                  </Link>
+                </Button>
+                <Button>
+                  <Link className={selectedType==='signin' ? classes.selected : ''}
+                    onClick = {() => setSelectedType('signin')}
+                    to="/dangnhap">
+                      Đăng Nhập
+                  </Link>
+                </Button>
               </ButtonGroup>
             </div>
-          )}
-         
+          )} 
         </Toolbar>
+        </Container>
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
