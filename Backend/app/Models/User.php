@@ -61,9 +61,4 @@ class User extends \TCG\Voyager\Models\User implements JWTSubject
     public function getJWTCustomClaims() {
         return [];
     }
-
-    public function products()
-    {
-        return $this->hasMany(Product::class);
-    }
 }

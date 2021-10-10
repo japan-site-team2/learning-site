@@ -115,16 +115,8 @@ class ApiController extends Controller
         $this->validate($request, [
             'token' => 'required'
         ]);
-        DebugBar::log("aaaaa");
         $user = JWTAuth::authenticate($request->token);
  
         return response()->json(['user' => $user]);
-    }
-
-    public function test(Request $request)
-    {
-        $data = ["a" => 1111];
-
-        return response()->json($data);
     }
 }      
