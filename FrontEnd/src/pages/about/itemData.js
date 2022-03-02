@@ -2,25 +2,23 @@ const itemData = [
     {
       img: '/static/images/aboutPage/about-1.jpg',
       title: 'Breakfast',
-      author: 'jill111',
-      featured: true,
-      cols: 3,
+      rows: 2,
+      cols: 2,
     },
     {
       img: '/static/images/aboutPage/about-2.jpg',
       title: 'Tasty burger',
-      author: 'director90',
+      cols: 2,
     },
     {
       img: '/static/images/aboutPage/about-3.jpg',
       title: 'Camera',
-      author: 'Danson67',
+      cols: 2,
     },
     {
       img: '/static/images/aboutPage/about-4.jpg',
       title: 'Morning',
-      author: 'fancycrave1',
-      featured: true,
+      cols: 2,
     },
     {
       img: '/static/images/aboutPage/about-5.jpg',

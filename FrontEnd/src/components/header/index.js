@@ -1,26 +1,31 @@
-import React from 'react';
-import { alpha, makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
-import Badge from '@material-ui/core/Badge';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import MoreIcon from '@material-ui/icons/MoreVert';
-import Button from '@material-ui/core/Button';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import PostAddIcon from '@material-ui/icons/PostAdd';
-import SettingsApplicationsIcon from '@material-ui/icons/SettingsApplications';
+import React, { useState } from 'react';
+import axios from 'axios';
+import * as api from '../../redux/api';
+import { useDispatch, useSelector } from 'react-redux';
+import { MenuItem, Button, Container } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { alpha, } from '@mui/material/styles';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import InputBase from '@mui/material/InputBase';
+import Badge from '@mui/material/Badge';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+// import AccountCircle from '@mui/icons-material/AccountCircle';
+import MailIcon from '@mui/icons-material/Mail';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import MoreIcon from '@mui/icons-material/MoreVert';
+import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
+import PostAddIcon from '@mui/icons-material/PostAdd';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import {  Link,} from 'react-router-dom';
-import Container from '@material-ui/core/Container';
-
+import * as checkToken from '../../constants';
+import * as checkLogin from '../../constants/index';
+import stringAvatar from '../avatars';
+import Avatar from '@mui/material/Avatar';
+import { userState$ } from '../../redux/selectors'
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -44,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: alpha(theme.palette.common.white, 1),
     },
     marginRight: theme.spacing(2),
-    marginLeft: 0,
+    marginLeft: 3,
     width: '100%',
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(3),
@@ -52,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   searchIcon: {
-    padding: theme.spacing(0, 2),
+    padding: theme.spacing(0, 21),
     height: '100%',
     position: 'absolute',
     pointerEvents: 'none',
@@ -77,14 +82,15 @@ const useStyles = makeStyles((theme) => ({
     display: 'none',
     [theme.breakpoints.up('md')]: {
       display: 'flex',
+      justifyContent: 'space-between',
     },
   },
   menuDesktop: {
     display: 'none',
     [theme.breakpoints.up('md')]: {
       display: 'flex',
-      marginLeft: '80px',
     },
+   
   },
   sectionMobile: {
     display: 'flex',
@@ -99,24 +105,44 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   userIcon:{
-    marginRight: '5px'
+    marginRight: '5px',
+    fontSize: '1.25rem'
   },
   selected:{
-    color: '#ff8000',
+    color: '#ff8000 !important',
   },
   colorBlack: {
-    color: 'rgba(0, 0, 0, 0.87)'
+    color: 'red',
+    
   }
 }));
 
-
 export default function Header() {
   const classes = useStyles();
-  const [isLogin, setIsLogin] = React.useState('true');
-  const userInfo= isLogin;
+  const [isLogin,setIsLogin] = useState(checkLogin.isLogin);
+  const logOut = async () => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${api.URL}/api/logout`,
+        params: {"token":`${checkToken.token}`},
+        headers: {"Content-Type" : "application/json"},
+      })
+      if (response.data.success===true) {
+        window.location.reload();
+        alert("Bạn đã đăng xuất thành công")
+      }
+    } 
+    catch (error) {
+      console.log(error);
+    }
+  }
   const handleAccountLogOut = () => {
-    handleAccountMenuClose();
+    localStorage.setItem('isLogin',false)
+    logOut();
+    localStorage.removeItem('accessToken')
     setIsLogin(false);
+    handleAccountMenuClose();
   }
   
   // set up menu pages list  in mobile
@@ -140,9 +166,9 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}><Link className={classes.colorBlack} to="/">Trang chủ</Link></MenuItem>
-      <MenuItem onClick={handleMenuClose}><Link className={classes.colorBlack} to="/congdong">Cộng đồng</Link></MenuItem>
-      <MenuItem onClick={handleMenuClose}><Link className={classes.colorBlack} to="/baiviet">Bài Viết</Link></MenuItem>
+      <MenuItem onClick={handleMenuClose}><Link to="/">Trang chủ</Link></MenuItem>
+      <MenuItem onClick={handleMenuClose}><Link to="/community">Cộng đồng</Link></MenuItem>
+      <MenuItem onClick={handleMenuClose}><Link to="/blogs">Bài Viết</Link></MenuItem>
     </Menu>
   );
 
@@ -216,7 +242,7 @@ export default function Header() {
           aria-haspopup="true"
           color="inherit"
         >
-          <AccountCircle />
+        <Avatar {...stringAvatar('Kent Dodds')} />
         </IconButton>
         <p onClick={handleMobileMenuClose}>Profile</p>
       </MenuItem>
@@ -225,38 +251,34 @@ export default function Header() {
 
   //set up style for select menu, select
   const [selectedType,setSelectedType] = React.useState('');
-
+  const dispatch = useDispatch();
+  const dataUser = useSelector(userState$);
   return (
     <div className={classes.grow}>
       <AppBar position="fixed" color="default">
       <Container>
-        <Toolbar>
-          <Link  onClick = {() => setSelectedType('')} to="/">
-            <Typography className={classes.title} variant="h6" noWrap>
-              Team 2 IT
-            </Typography>
-          </Link>
+        <Toolbar style={{paddingLeft: '6px'}}>
           <div className={classes.menuDesktop}>
-            <MenuItem>
-              <Link className={selectedType==='homepage' ? classes.selected : ''}
-                onClick = {() => setSelectedType('homepage')} to="/">
-                  Trang chủ
-              </Link>
-            </MenuItem>
-            <MenuItem>
-              <Link className={selectedType==='community' ? classes.selected : ''}
-                onClick = {() => setSelectedType('community')}
-                to="/congdong">
-                  Cộng Đồng
-              </Link>
-            </MenuItem>
-            <MenuItem>
-              <Link className={selectedType==='blogs' ? classes.selected : ''}
-                onClick = {() => setSelectedType('blogs')}
-                to="/baiviet">
-                  Bài viết
-              </Link>
-            </MenuItem>
+            <Link className={selectedType==='homepage' ? classes.selected : ''}
+              onClick = {() => setSelectedType('homepage')} to="/">
+              <MenuItem>
+                Tiếng Nhật IT
+              </MenuItem>
+            </Link>
+            <Link className={selectedType==='community' ? classes.selected : ''}
+              onClick = {() => setSelectedType('community')}
+              to="/community">
+              <MenuItem>
+                Cộng Đồng
+              </MenuItem>
+            </Link>   
+            <Link className={selectedType==='blogs' ? classes.selected : ''}
+              onClick = {() => setSelectedType('blogs')}
+              to="/blogs">
+              <MenuItem>
+                Bài viết
+              </MenuItem>
+            </Link>
           </div>
           <div className={classes.menuMobile}>
             <IconButton
@@ -283,7 +305,7 @@ export default function Header() {
             />
           </div>
           <div className={classes.grow} />
-          {userInfo ? (
+          { isLogin==='true' ? (
           <div>
             <div className={classes.sectionDesktop}>
               <IconButton aria-label="show 4 new mails" color="inherit">
@@ -304,8 +326,9 @@ export default function Header() {
                 onClick={handleAccountMenuOpen}
                 color="inherit"
               >
-                <AccountCircle />
+              <Avatar {...stringAvatar(`${dataUser.name}`)}/>
               </IconButton>
+            
             </div>
             <div className={classes.sectionMobile}>
               <IconButton
@@ -321,20 +344,18 @@ export default function Header() {
           </div>
           ) : (
             <div>
-              <Button>
-                <Link className={selectedType==='signup' ? classes.selected : ''}
-                  onClick = {() => setSelectedType('signup')}
-                  to="/dangky">
-                    Đăng Ký
-                </Link>
-              </Button>
-              <Button>
-                <Link className={selectedType==='signin' ? classes.selected : ''}
-                  onClick = {() => setSelectedType('signin')}
-                  to="/dangnhap">
-                    Đăng Nhập
-                </Link>
-              </Button>
+              <Link to="/signUp">
+                <Button className={selectedType==='signup' ? classes.selected : ''}
+                  onClick = {() => setSelectedType('signup')}>  
+                    Đăng Ký 
+                </Button>
+              </Link>
+              <Link to="/logIn">
+                <Button className={selectedType==='signin' ? classes.selected : ''}
+                  onClick = {() => setSelectedType('signin')}>
+                  Đăng Nhập
+                </Button>
+              </Link>
             </div>
           )} 
         </Toolbar>

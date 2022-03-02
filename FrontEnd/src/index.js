@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import { Provider } from 'react-redux';
-import CategoryStore from './redux/categoryStore/store'
+import Store from './redux/store';
 
 ReactDOM.render(
-  <Provider store={CategoryStore}>
+  <Provider store={Store}>
     <App />
   </Provider>,
   document.getElementById('root')

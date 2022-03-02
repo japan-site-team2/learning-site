@@ -1,15 +1,14 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
-import GitHubIcon from '@material-ui/icons/GitHub';
-import FacebookIcon from '@material-ui/icons/Facebook';
-import { Link } from '@material-ui/core';
-import TwitterIcon from '@material-ui/icons/Twitter';
+import { makeStyles } from '@mui/styles';
+import Card from '@mui/material/Card';
+import CardActionArea from '@mui/material/CardActionArea';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import { Link, Typography  } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import TwitterIcon from '@mui/icons-material/Twitter';
 import ourTeamFake from '../ourTeamFake';
 import ourTeam from '../ourTeam'
 
@@ -64,7 +63,7 @@ export default function OneCard({inforTeam,infor,setInforTeam}) {
           <Typography variant="h6">
            {infor.name}
           </Typography>
-          <Typography variant="body2" color="rgb(100, 110, 115)">
+          <Typography variant="body2">
             {infor.jobTitle}
           </Typography>
           <span className={classes.speak} >

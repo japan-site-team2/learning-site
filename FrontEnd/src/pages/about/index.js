@@ -1,15 +1,12 @@
 import React from 'react';
-import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
-import { Grid, makeStyles} from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
-import ImageList from '@material-ui/core/ImageList';
-import ImageListItem from '@material-ui/core/ImageListItem';
+import { Container, Typography, Grid, Button, Box } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
+import { Link } from 'react-router-dom';
 import itemData from './itemData.js';
 import OurTeamCards from '../../components/cards/ourteamCards'
-import Box from '@material-ui/core/Box';
-import { Link } from 'react-router-dom';
 import Ripple from '../../components/animations/ripple'
 
 const useStyles = makeStyles((theme) => ({
@@ -27,14 +24,13 @@ const useStyles = makeStyles((theme) => ({
         flexWrap: 'wrap',
         justifyContent: 'center',
         maxWidth: '100%',
-        marginTop: '20px',
         textAlign: 'center',
         lineHeight: '1.6',
         fontFamily: 'Inter',
         fontWeight: '500',
         paddingLeft: '10px',
         paddingRight: '10px',
-        
+        paddingTop: '15px',
     },
     appendix:{
         margin: '0px 0px 0.35em',
@@ -70,6 +66,14 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
+function srcset(image, size, rows = 1, cols = 1) {
+    return {
+      src: `${image}?w=${size * cols}&h=${size * rows}&fit=crop&auto=format`,
+      srcSet: `${image}?w=${size * cols}&h=${
+        size * rows
+      }&fit=crop&auto=format&dpr=2 2x`,
+    };
+  }
 
 export default function About() {
     const classes = useStyles();
@@ -83,7 +87,7 @@ export default function About() {
                         </p>
                     )}
                     <Box className={classes.solgan} fontSize={{ xs: 'h6.fontSize', sm: 'h5.fontSize', md: 'h4.fontSize' }}>
-                        Chúng tôi đem lại cho cộng đồng IT sử dụng tiếng Nhật những chia sẽ hữu ích.
+                        Đem lại cho cộng đồng IT sử dụng tiếng Nhật những chia sẽ hữu ích.
                     </Box>
                     <Box fontSize={{ xs: 'body2.fontSize', sm: 'h6.fontSize' }}>
                         Với một đội ngũ có kinh nghiệm về IT và tiếng Nhật;
@@ -98,7 +102,7 @@ export default function About() {
                         </p>
                     )}
                     <Box className={classes.solgan} fontSize={{ xs: 'h6.fontSize', sm: 'h5.fontSize', md: 'h4.fontSize' }}>
-                        <rotateInDownLeftDiv>Chúng tôi hoạt động dựa trên tiêu chí chia sẽ nhiều hơn thành công lơn hơn.</rotateInDownLeftDiv>
+                       Hoạt động dựa trên tiêu chí chia sẽ nhiều hơn thành công lơn hơn.
                     </Box>
                     <Box fontSize={{ xs: 'body2.fontSize', sm: 'h6.fontSize' }}>
                         Đến với Team 2 IT bạn có thể tra cứu các từ vựng theo từng chủ đề với những ví dụ minh họa cụ thể.
@@ -108,15 +112,19 @@ export default function About() {
                 </Grid>
             </Grid>
             <div className={classes.root}>
-                <ImageList className={classes.img} rowHeight={220} cols={4}>
+                <ImageList className={classes.img} rowHeight={160} cols={4}>
                     {itemData.map((item) => (
-                    <ImageListItem key={item.img} cols={item.cols || 1} rows={item.rows || 1}>
-                        <img src={item.img} alt={item.title} />
-                    </ImageListItem>
+                        <ImageListItem key={item.img} cols={item.cols || 1} rows={item.rows || 1}>
+                            <img
+                                {...srcset(item.img, 160, item.rows, item.cols)}
+                                alt={item.title}
+                                loading="lazy"
+                            />
+                        </ImageListItem>
                     ))}
                 </ImageList>
             </div>  
-            <div className={classes.root} xs={12} sm={3} spacing={1}>
+            <div className={classes.root}>
                 <div>
                     <p className={classes.appendix}>
                         our team
@@ -131,12 +139,14 @@ export default function About() {
                    Đội ngũ của Team 2 IT gồm những thành viên tài năng, vui tính, năng động. Chúng tôi luôn mong muốn sự gắn kết từ các bạn.
                    Lưu ý: Nhấn vào thành viên để biết được bí mật của Team 2 IT!
                 </Box>
-                <Link to="/lienhe">
-                    <Button className={classes.btn} variant="contained" color="primary" >
-                        Contacts us   
-                        <ArrowRightAltIcon className={classes.icon} />
-                    </Button>
-                </Link> 
+                <div className={classes.btn} >
+                    <Link to="/lienhe">
+                        <Button variant="contained" color="primary" >
+                            Contacts us   
+                            <ArrowRightAltIcon className={classes.icon} />
+                        </Button>
+                    </Link> 
+                </div>
             </div>
             <div className={classes.ourteam}>
                 <OurTeamCards/>

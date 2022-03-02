@@ -1,18 +1,22 @@
 import React from 'react';
-import { Container,Button, Link, makeStyles,Typography} from '@material-ui/core'
+import { Container,Button, Typography} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     page: {
-       display: 'flex',
-       justifyContent: 'center',
-       textAlign: 'center',
-       height: '537px',
-       alignItems: 'center',
+        minHeight: '584px',
+        display: 'flex',
+        justifyContent: 'center',
+        textAlign: 'center',
+        height: '100%',
+        alignItems: 'center',
     },
     btn: {
-        marginTop:'20px',
+        marginTop:'40px',
     },
     link:{
+        color: 'white',
         '&:hover': {
             textDecoration: 'none'
         },
@@ -21,22 +25,24 @@ const useStyles = makeStyles((theme) => ({
 export default function Notfound() {
     const classes=useStyles();
     return (
-        
         <Container>
             <div className={classes.page}>
-            <div>
-                <Typography variant="h1">404 Error</Typography>
-                <Typography variant="h3">Trang này không tồn tại!</Typography>
-                <Typography variant="h5" color="s">
-                    Nếu bạn cho rằng đây là vấn đề của chúng tôi, vui lòng cho chúng tôi biết. 
-                    <Link href="/gioithieu">Liên hệ</Link>
-                </Typography>
-                <Button variant="contained" className={classes.btn}>
-                    <Link className={classes.link} color="white" href="/">Quay lại trang chủ.</Link>
-                </Button>
-            </div>
+                <div>
+                    <div>
+                        <Typography variant="h1">404 Error</Typography>
+                        <Typography variant="h3">Trang này không tồn tại!</Typography>
+                        <Typography variant="h5" color="s">
+                            Nếu bạn cho rằng đây là vấn đề của chúng tôi, vui lòng cho chúng tôi biết. 
+                            <Link to="/contacts" style={{color: 'blue'}}>Liên hệ.</Link>
+                        </Typography>
+                    </div>
+                    <div className={classes.btn}>
+                        <Button variant="contained">
+                            <Link className={classes.link} to="/">Quay lại trang chủ.</Link>
+                        </Button>
+                    </div>
+                </div>
             </div>
         </Container>
-    
     )
 }
